@@ -10,7 +10,7 @@
 #include "DataAssets/Input/DataAsset_InputConfig.h"
 #include "Components/Input/Warrior_InputComponent.h"
 #include "WArriorGameplayTags.h"
-
+#include "AbilitySystem/C_WarriorAbilityComponent.h"
 
 #include "WarriorDebugHelper.h"
 AC_Warrior::AC_Warrior()
@@ -39,6 +39,23 @@ AC_Warrior::AC_Warrior()
 
 }
 
+void AC_Warrior::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (WarriorAbilityComponent&& WarriorAttributeSet)
+	{
+		const FString AScText = FString::Printf
+		(
+			TEXT("OwnerActor : %s, AvartarActor :%s"), 
+			*WarriorAbilityComponent->GetOwnerActor()->GetActorLabel(),
+			*WarriorAbilityComponent->GetAvatarActor()->GetActorLabel()
+		);
+			Debug::Print(TEXT("Ability system valid ") + AScText, FColor::Green);
+			Debug::Print(TEXT("Attribute Set valid ") + AScText, FColor::Green);
+	}
+}
+
 void AC_Warrior::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	checkf(InputConfigDataAsset, TEXT("Forgot to Assign a valid data asset as input config"));
@@ -63,7 +80,7 @@ void AC_Warrior::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Debug::Print(TEXT("Working"));
+	
 
 }
 

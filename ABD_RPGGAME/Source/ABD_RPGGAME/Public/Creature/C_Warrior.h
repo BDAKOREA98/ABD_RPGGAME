@@ -22,8 +22,14 @@ class ABD_RPGGAME_API AC_Warrior : public AC_Creature
 public:
 	AC_Warrior();
 
+	
 
 protected:
+
+	//begin APwan interfece
+	virtual void PossessedBy(AController* NewController) override;
+	//end APwan interfece
+
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void BeginPlay() override;
