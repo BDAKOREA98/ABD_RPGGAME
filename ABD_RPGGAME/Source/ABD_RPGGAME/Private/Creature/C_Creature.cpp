@@ -21,7 +21,7 @@ AC_Creature::AC_Creature()
 
 }
 
-UAbilitySystemComponent* AC_Creature::GetAbilitySystemComponent() const
+UAbilitySystemComponent* AC_Creature::GetAbilitySystemComponent() const 
 {
 	return GetWarriorAbilitySystemComponent();
 }
@@ -33,6 +33,12 @@ void AC_Creature::PossessedBy(AController* NewController)
 	if (WarriorAbilityComponent)
 	{
 		WarriorAbilityComponent->InitAbilityActorInfo(this, this);
+		
+
+		
+		ensureMsgf(!CharacterStartUpData.IsNull(), TEXT("Forgot to assign start up data to %s"), *GetName());
+		
+
 	}
 
 
