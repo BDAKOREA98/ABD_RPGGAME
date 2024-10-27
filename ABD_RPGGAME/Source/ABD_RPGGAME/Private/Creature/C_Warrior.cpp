@@ -2,6 +2,7 @@
 
 
 #include "Creature/C_Warrior.h"
+
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -73,6 +74,9 @@ void AC_Warrior::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 	WarriorInputComponent->BindNativeInputAction(InputConfigDataAsset,WarriorGamePlayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
 	WarriorInputComponent->BindNativeInputAction(InputConfigDataAsset,WarriorGamePlayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
+	//WarriorInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleassed);
+	WarriorInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleassed);
+
 
 }
 
@@ -118,4 +122,14 @@ void AC_Warrior::Input_Look(const FInputActionValue& InputActionValue)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 
+}
+
+void AC_Warrior::Input_AbilityInputPressed(FGameplayTag InInputTag)
+{
+	WarriorAbilityComponent->OnAbilityInputPressed(InInputTag);
+}
+
+void AC_Warrior::Input_AbilityInputReleassed(FGameplayTag InInputTag)
+{
+	WarriorAbilityComponent->OnAbilityInputReleassed(InInputTag);
 }

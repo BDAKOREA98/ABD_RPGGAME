@@ -47,7 +47,7 @@ inline void UWarrior_InputComponent::BindAbilityInputAction(const UDataAsset_Inp
 
 	for (const FWarriorInputActionConfig& AbilityInputActionConfig :InInputConfig-> AbilityInputActions)
 	{
-		if (AbilityInputActionConfig.IsValid())
+		if (!AbilityInputActionConfig.IsValid())
 		{
 			continue;
 		}

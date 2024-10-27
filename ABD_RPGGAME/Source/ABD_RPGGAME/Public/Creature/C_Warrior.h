@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Creature/C_Creature.h"
+#include "GameplayTagContainer.h"
 #include "C_Warrior.generated.h"
 
 class USpringArmComponent;
@@ -60,6 +61,9 @@ private:
 
 	void Input_Look(const FInputActionValue& InputActionValue);
 
+
+	void Input_AbilityInputPressed(FGameplayTag InInputTag);
+	void Input_AbilityInputReleassed(FGameplayTag InInputTag);
 
 #pragma endregion
 public:
