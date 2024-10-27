@@ -12,17 +12,29 @@ class ABD_RPGGAME_API UC_PawnExtensionComponentBase : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	UC_PawnExtensionComponentBase();
+	template<class T> 
+	T* GetOwningPawn() const
+	{
+		static_assert(TPointerIsConvertibleFromTo <T, APawn>::Value, "'T' Template Parameter get GetPawn must be derived from APawn");
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+		return CastChecked<T>(GetOwner());
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	}
 
-		
+
+	APawn* GetOwningPawn() const
+	{
+		return GetOwningPawn<APawn>();
+	}
+
+	template <class T>
+	T* GetOwningController() const
+	{
+		static_assert(TPointerIsConvertibleFromTo <T, AController>::Value, "'T' Template Parameter get GetController must be derived from AController");
+		return GetOwningPawn<APawn>()->GetController<T>();
+	}
+
+
+
+
 };

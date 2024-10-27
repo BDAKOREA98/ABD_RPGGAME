@@ -12,7 +12,7 @@
 #include "WArriorGameplayTags.h"
 #include "AbilitySystem/C_WarriorAbilityComponent.h"
 #include "DataAssets/StartUpData/C_Hero_DataAsset_StartUpDataBase.h"
-
+#include "Components/Combat/C_HeroCombatComponent.h"
 
 #include "WarriorDebugHelper.h"
 AC_Warrior::AC_Warrior()
@@ -38,6 +38,9 @@ AC_Warrior::AC_Warrior()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0f;
+
+
+	HeroCombatComponent = CreateDefaultSubobject<UC_HeroCombatComponent>(TEXT("HeroCombatComponent"));
 
 }
 
