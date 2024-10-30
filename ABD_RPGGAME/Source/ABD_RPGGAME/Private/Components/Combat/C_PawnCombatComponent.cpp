@@ -45,6 +45,7 @@ AWarriorWeaponBase* UC_PawnCombatComponent::GetCreatureCarriedWeaponByTag(FGamep
 
 AWarriorWeaponBase* UC_PawnCombatComponent::GetCreatureCurrentEquippedWeapon() const
 {
+
 	if (!CurrentEquippedWeaponTag.IsValid())
 	{
 		return nullptr;
