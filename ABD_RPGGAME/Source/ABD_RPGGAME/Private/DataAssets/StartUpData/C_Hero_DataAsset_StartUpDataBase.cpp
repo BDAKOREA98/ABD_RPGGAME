@@ -2,13 +2,11 @@
 
 
 #include "DataAssets/StartUpData/C_Hero_DataAsset_StartUpDataBase.h"
-#include "DataAssets/StartUpData/C_DataAsset_StartUpDataBase.h"
+#include "WarriorTypes/C_WarriorStrucTypes.h"
 #include "AbilitySystem/C_WarriorAbilityComponent.h"
-#include "AbilitySystem/C_WarriorAbilityComponent.h"
-bool FWarriorHeroAbilitySet::IsValid() const
-{
-    return InputTag.IsValid() && AbilityToGrant;
-}
+#include "AbilitySystem/Abilities/C_WarriorHeroGameplayAbility.h"
+
+
 
 void UC_Hero_DataAsset_StartUpDataBase::GiveToAbilitySystemComponent(UC_WarriorAbilityComponent* InASCToGive, int32 ApplyLevel)
 {
