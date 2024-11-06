@@ -8,7 +8,7 @@
 #include "C_Creature.generated.h"
 
 class UC_WarriorAbilityComponent;
-class UC_WarriorAttributeSet;
+class UC_CreatureAttributeSet;
 class UAbilitySystemComponent;
 class UC_DataAsset_StartUpDataBase;
 
@@ -32,7 +32,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
 	UC_WarriorAbilityComponent* WarriorAbilityComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
-	UC_WarriorAttributeSet* WarriorAttributeSet;
+	UC_CreatureAttributeSet* WarriorAttributeSet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterData")
 	TSoftObjectPtr<UC_DataAsset_StartUpDataBase> CharacterStartUpData;
@@ -41,7 +41,7 @@ protected:
 
 public:
 	FORCEINLINE UC_WarriorAbilityComponent* GetWarriorAbilitySystemComponent() const { return WarriorAbilityComponent; }
-	FORCEINLINE UC_WarriorAttributeSet* GetWarriorAttributeSet() const { return WarriorAttributeSet; }
+	FORCEINLINE UC_CreatureAttributeSet* GetWarriorAttributeSet() const { return WarriorAttributeSet; }
 
 
 };

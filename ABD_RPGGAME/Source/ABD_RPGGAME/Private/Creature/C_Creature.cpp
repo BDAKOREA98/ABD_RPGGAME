@@ -3,7 +3,7 @@
 
 #include "Creature/C_Creature.h"
 #include "AbilitySystem/C_WarriorAbilityComponent.h"
-#include "AbilitySystem/C_WarriorAttributeSet.h"
+#include "AbilitySystem/C_CreatureAttributeSet.h"
 // Sets default values
 AC_Creature::AC_Creature()
 {
@@ -17,7 +17,7 @@ AC_Creature::AC_Creature()
 
 	WarriorAbilityComponent = CreateDefaultSubobject<UC_WarriorAbilityComponent>(TEXT("WarriorAbilitySystemComponent"));
 
-	WarriorAttributeSet = CreateDefaultSubobject<UC_WarriorAttributeSet>(TEXT("WarriorAttributeSet"));
+	WarriorAttributeSet = CreateDefaultSubobject<UC_CreatureAttributeSet>(TEXT("WarriorAttributeSet"));
 
 }
 
