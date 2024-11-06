@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/C_WarriorHeroGameplayAbility.h"
 #include "Creature/C_Warrior.h"
 #include "Controller/C_WarriorController.h"
+#include "AbilitySystem/C_WarriorGameplayAbility.h"
 AC_Warrior* UC_WarriorHeroGameplayAbility::GetHeroCharacterFromActorInfo()
 {
 	if (!CachedWarriorHeroCharacter.IsValid())
@@ -35,4 +36,12 @@ AC_WarriorController* UC_WarriorHeroGameplayAbility::GetHeroControllerFromActorI
 UC_HeroCombatComponent* UC_WarriorHeroGameplayAbility::GetHeroCombatComponentFromActorInfo()
 {
 	return GetHeroCharacterFromActorInfo()->GetHeroCombatComponent();
+}
+
+FGameplayEffectSpecHandle UC_WarriorHeroGameplayAbility::MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass, float InWeaponBaseDamage, FGameplayTag InCurrentAttackTypeTag, int32 InCurrentComboCount)
+{
+	check(EffectClass);
+
+	
+	return FGameplayEffectSpecHandle();
 }

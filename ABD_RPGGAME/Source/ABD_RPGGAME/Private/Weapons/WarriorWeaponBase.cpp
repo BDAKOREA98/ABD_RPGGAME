@@ -34,12 +34,14 @@ void AWarriorWeaponBase::OnCollisionBoxBeginOverlab(UPrimitiveComponent* Overlap
 
 	APawn* WeaponOwningPawn =	GetInstigator<APawn>();
 
-	checkf(WeaponOwningPawn, TEXT("Forgot to Assign an Instigator as the Owning pawn of the Weapon %s "), *GetName());
+	checkf(WeaponOwningPawn, TEXT("Forgot to Assign an Instigator as the Owning pawn for the Weapon %s "), *GetName());
 	if (APawn* HitPawn =  Cast<APawn>(OtherActor))
 	{
 		if (WeaponOwningPawn != HitPawn)
 		{
-			Debug::Print(GetName() + TEXT("Begin overlab with") + HitPawn->GetName(), FColor::Green);
+			
+			OnWeaponHitTarget.ExecuteIfBound(OtherActor);
+
 
 		}
 
@@ -53,12 +55,12 @@ void AWarriorWeaponBase::OnCollisionBoxEndOverlab(UPrimitiveComponent* Overlappe
 {
 	APawn* WeaponOwningPawn = GetInstigator<APawn>();
 
-	checkf(WeaponOwningPawn, TEXT("Forgot to Assign an Instigator as the Owning pawn of the Weapon %s "), *GetName());
+	checkf(WeaponOwningPawn, TEXT("Forgot to Assign an Instigator as the Owning pawn for the Weapon %s "), *GetName());
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
 		if (WeaponOwningPawn != HitPawn)
 		{
-			Debug::Print(GetName() + TEXT("Begin overlab with") + HitPawn->GetName(), FColor::Red);
+			OnWeaponPulledFromTarget.ExecuteIfBound(OtherActor);
 
 		}
 

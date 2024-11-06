@@ -16,6 +16,10 @@ void UC_PawnCombatComponent::RegisterSpawnedWeapon(FGameplayTag InWeaponTagToReg
 
 	CraetureCarriedWeaponMap.Emplace(InWeaponTagToRegister, InWeaponToRegister);
 
+
+	InWeaponToRegister->OnWeaponHitTarget.BindUObject(this, &ThisClass::OnHitTargetActor);
+	InWeaponToRegister->OnWeaponPulledFromTarget.BindUObject(this, &ThisClass::OnWeaponPulledFromTargetActor);
+
 	if (bRegisterAsEquippedWeapon)
 	{
 		CurrentEquippedWeaponTag = InWeaponTagToRegister;
@@ -72,14 +76,25 @@ void UC_PawnCombatComponent::ToggleWeaponCollision(bool bShouldEnable, EToggleDa
 		else
 		{
 			WeaponToToggle->GetWeaponCollisionBox()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			
+			OverlappedActors.Empty();
+
+
 		}
 
 		
 	}
 
-	//TODO : Handle Body
+	//TODO : Handle Body Collision Box
 
 
 
+}
+
+void UC_PawnCombatComponent::OnHitTargetActor(AActor* HitActor)
+{
+	
+}
+
+void UC_PawnCombatComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor)
+{
 }

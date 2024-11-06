@@ -11,6 +11,7 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ABD_RPGGAME_API UC_PawnExtensionComponentBase : public UActorComponent
 {
 	GENERATED_BODY()
+protected:
 
 	template<class T> 
 	T* GetOwningPawn() const

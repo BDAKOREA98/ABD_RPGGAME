@@ -9,6 +9,8 @@
 class UStaticMeshComponent;
 class UBoxComponent;
 
+DECLARE_DELEGATE_OneParam(FOnTagetInteractedDelegate, AActor*)
+
 
 UCLASS()
 class ABD_RPGGAME_API AWarriorWeaponBase : public AActor
@@ -19,6 +21,8 @@ public:
 	// Sets default values for this actor's properties
 	AWarriorWeaponBase();
 
+	FOnTagetInteractedDelegate OnWeaponHitTarget;
+	FOnTagetInteractedDelegate OnWeaponPulledFromTarget;
 
 
 protected:
@@ -34,6 +38,8 @@ protected:
 	virtual void OnCollisionBoxBeginOverlab(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	virtual void OnCollisionBoxEndOverlab(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	
 
 
 public:
