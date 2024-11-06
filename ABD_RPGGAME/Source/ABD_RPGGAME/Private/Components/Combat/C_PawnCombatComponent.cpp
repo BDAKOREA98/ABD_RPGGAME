@@ -22,8 +22,7 @@ void UC_PawnCombatComponent::RegisterSpawnedWeapon(FGameplayTag InWeaponTagToReg
 	}
 
 
-	const FString WeaponString = FString::Printf(TEXT("A Weapon named : %s  has been registered using the tag %s"), *InWeaponToRegister->GetName(), *InWeaponTagToRegister.ToString());
-	Debug::Print(WeaponString);
+	
 
 
 }
