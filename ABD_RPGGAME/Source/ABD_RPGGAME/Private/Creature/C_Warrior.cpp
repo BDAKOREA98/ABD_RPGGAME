@@ -45,6 +45,11 @@ AC_Warrior::AC_Warrior()
 
 }
 
+UC_PawnCombatComponent* AC_Warrior::GetPawnCombatComponent() const
+{
+	return HeroCombatComponent;
+}
+
 void AC_Warrior::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

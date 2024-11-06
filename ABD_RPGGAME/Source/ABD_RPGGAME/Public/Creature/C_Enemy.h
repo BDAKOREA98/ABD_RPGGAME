@@ -19,6 +19,10 @@ class ABD_RPGGAME_API AC_Enemy : public AC_Creature
 public:
 	AC_Enemy();
 
+	//Begin IPawnCombatInterface Interface
+	virtual UC_PawnCombatComponent* GetPawnCombatComponent() const override;
+	//End IPawnCombatInterface Interface
+
 protected:
 
 	//begin APwan interfece

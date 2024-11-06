@@ -28,6 +28,11 @@ AC_Enemy::AC_Enemy()
 
 }
 
+UC_PawnCombatComponent* AC_Enemy::GetPawnCombatComponent() const
+{
+	return EnemyCombatComponent;
+}
+
 void AC_Enemy::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -52,7 +57,7 @@ void AC_Enemy::InitEnemyStartUpData()
 				{
 
 					LoadedData->GiveToAbilitySystemComponent(WarriorAbilityComponent);
-					Debug::Print(TEXT("Enemy Start Up Data Loaded"), FColor::Green);
+					
 
 				}
 			}

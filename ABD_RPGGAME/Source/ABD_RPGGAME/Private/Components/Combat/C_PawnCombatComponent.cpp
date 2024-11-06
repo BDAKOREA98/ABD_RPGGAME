@@ -4,7 +4,7 @@
 #include "Components/Combat/C_PawnCombatComponent.h"
 #include "Weapons/WarriorWeaponBase.h"
 #include "Creature/C_Creature.h"
-
+#include "Components/BoxComponent.h"
 
 #include "WarriorDebugHelper.h"
 
@@ -53,4 +53,33 @@ AWarriorWeaponBase* UC_PawnCombatComponent::GetCreatureCurrentEquippedWeapon() c
 
 
 	return GetCreatureCarriedWeaponByTag(CurrentEquippedWeaponTag);
+}
+
+void UC_PawnCombatComponent::ToggleWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType)
+{
+
+	if (ToggleDamageType == EToggleDamageType::CurrentEquippedWeapon)
+	{
+		AWarriorWeaponBase* WeaponToToggle =	GetCreatureCurrentEquippedWeapon();
+
+		check(WeaponToToggle);
+		if (bShouldEnable)
+		{
+			WeaponToToggle->GetWeaponCollisionBox()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			
+			
+		}
+		else
+		{
+			WeaponToToggle->GetWeaponCollisionBox()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			
+		}
+
+		
+	}
+
+	//TODO : Handle Body
+
+
+
 }

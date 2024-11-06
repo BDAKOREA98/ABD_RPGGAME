@@ -26,6 +26,12 @@ UAbilitySystemComponent* AC_Creature::GetAbilitySystemComponent() const
 	return GetWarriorAbilitySystemComponent();
 }
 
+UC_PawnCombatComponent* AC_Creature::GetPawnCombatComponent() const
+{
+
+	return nullptr;
+}
+
 void AC_Creature::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

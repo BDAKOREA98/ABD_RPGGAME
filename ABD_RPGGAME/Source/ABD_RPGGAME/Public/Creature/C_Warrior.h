@@ -24,7 +24,10 @@ class ABD_RPGGAME_API AC_Warrior : public AC_Creature
 public:
 	AC_Warrior();
 
-	
+	//Begin IPawnCombatInterface Interface
+	virtual UC_PawnCombatComponent* GetPawnCombatComponent() const override;
+	//End IPawnCombatInterface Interface
+
 
 protected:
 
