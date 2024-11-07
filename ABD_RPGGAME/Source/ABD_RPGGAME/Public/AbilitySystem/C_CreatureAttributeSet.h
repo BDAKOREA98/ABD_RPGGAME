@@ -50,5 +50,8 @@ public:
 	ATTRIBUTE_ACCESSORS(UC_CreatureAttributeSet, DefencePower);
 
 
+	UPROPERTY(BlueprintReadOnly, Category = "Damage")
+	FGameplayAttributeData DamageTaken;
+	ATTRIBUTE_ACCESSORS(UC_CreatureAttributeSet, DamageTaken);
 
 };

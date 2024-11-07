@@ -6,6 +6,7 @@
 #include "Components/Combat/C_EnemyCombatComponent.h"
 #include "Engine/AssetManager.h"
 #include "DataAssets/StartUpData/C_DataAsset_StartUpDataBase.h"
+#include "DataAssets/StartUpData/C_Enemy_DataAsset_StartUpData.h"
 
 #include "WarriorDebugHelper.h"
 AC_Enemy::AC_Enemy()
@@ -48,18 +49,24 @@ void AC_Enemy::InitEnemyStartUpData()
 		return;
 	}
 
-	UAssetManager::GetStreamableManager().RequestAsyncLoad(
+	UAssetManager::GetStreamableManager().RequestAsyncLoad
+	(
 		CharacterStartUpData.ToSoftObjectPath(),
-		FStreamableDelegate::CreateLambda(
+		FStreamableDelegate::CreateLambda
+		(
 			[this]()
 			{
 				if (UC_DataAsset_StartUpDataBase* LoadedData = CharacterStartUpData.Get())
 				{
+				
 
 					LoadedData->GiveToAbilitySystemComponent(WarriorAbilityComponent);
 					
-
+					Debug::Print(TEXT("Enemy Start Up DAta Loaded "),  FColor::Red);
+					
+					
 				}
+
 			}
 		)
 

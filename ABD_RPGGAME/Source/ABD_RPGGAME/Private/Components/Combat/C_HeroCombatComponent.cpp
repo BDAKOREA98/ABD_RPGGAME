@@ -14,6 +14,17 @@ AWarriorHeroWeapon* UC_HeroCombatComponent::GetHeroCarriedWeaponByTag(FGameplayT
     
 }
 
+AWarriorHeroWeapon* UC_HeroCombatComponent::GetHeroCurrentEquippedWeapon() const
+{
+    return Cast<AWarriorHeroWeapon>(GetCreatureCurrentEquippedWeapon());
+}
+
+float UC_HeroCombatComponent::GetHeroCurrentEquippedWeaponDamageAtLevel(float InLevel) const
+{
+    return GetHeroCurrentEquippedWeapon()->HeroWeaponData.WeaponBaseDamage.GetValueAtLevel(InLevel);
+    
+}
+
 void UC_HeroCombatComponent::OnHitTargetActor(AActor* HitActor)
 {
     if (OverlappedActors.Contains(HitActor))
@@ -41,5 +52,5 @@ void UC_HeroCombatComponent::OnHitTargetActor(AActor* HitActor)
 
 void UC_HeroCombatComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor)
 {
-    Debug::Print(GetOwningPawn()->GetActorNameOrLabel() + TEXT("'s Weapon Pulled from ") + InteractedActor->GetActorNameOrLabel(), FColor::Red);
+    
 }

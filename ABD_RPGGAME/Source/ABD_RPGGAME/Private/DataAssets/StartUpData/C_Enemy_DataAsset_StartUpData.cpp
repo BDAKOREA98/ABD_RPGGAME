@@ -7,8 +7,8 @@
 
 void UC_Enemy_DataAsset_StartUpData::GiveToAbilitySystemComponent(UC_WarriorAbilityComponent* InASCToGive, int32 ApplyLevel)
 {
-	Super::GiveToAbilitySystemComponent(InASCToGive,ApplyLevel);
 	
+	Super::GiveToAbilitySystemComponent(InASCToGive, ApplyLevel);
 	if (!EnemyCombatAbilities.IsEmpty())
 	{
 		for (const TSubclassOf < UC_EnemyGameplayAbility >& AbilityClass : EnemyCombatAbilities)
@@ -28,10 +28,12 @@ void UC_Enemy_DataAsset_StartUpData::GiveToAbilitySystemComponent(UC_WarriorAbil
 
 
 			
-
+			float a = 1;
 
 		}
 	}
+	
+	
 
 
 }

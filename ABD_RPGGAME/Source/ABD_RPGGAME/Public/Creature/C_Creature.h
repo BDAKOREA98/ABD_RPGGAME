@@ -48,6 +48,6 @@ protected:
 public:
 	FORCEINLINE UC_WarriorAbilityComponent* GetWarriorAbilitySystemComponent() const { return WarriorAbilityComponent; }
 	FORCEINLINE UC_CreatureAttributeSet* GetWarriorAttributeSet() const { return WarriorAttributeSet; }
-
+	
 
 };

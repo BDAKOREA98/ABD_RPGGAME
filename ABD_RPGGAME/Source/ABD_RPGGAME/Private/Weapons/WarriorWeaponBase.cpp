@@ -3,7 +3,7 @@
 
 #include "Weapons/WarriorWeaponBase.h"
 #include "Components/BoxComponent.h"
-
+#include "Creature/C_Enemy.h"
 
 #include "WarriorDebugHelper.h"
 
@@ -43,10 +43,16 @@ void AWarriorWeaponBase::OnCollisionBoxBeginOverlab(UPrimitiveComponent* Overlap
 			OnWeaponHitTarget.ExecuteIfBound(OtherActor);
 
 
+			
+
 		}
 
 		//TODO : Implement hit vheck for enemy character
 	}
+
+	
+
+	
 
 
 }

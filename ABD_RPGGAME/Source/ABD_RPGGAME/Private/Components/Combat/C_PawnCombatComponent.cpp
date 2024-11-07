@@ -55,7 +55,7 @@ AWarriorWeaponBase* UC_PawnCombatComponent::GetCreatureCurrentEquippedWeapon() c
 	}
 
 
-
+	
 	return GetCreatureCarriedWeaponByTag(CurrentEquippedWeaponTag);
 }
 
