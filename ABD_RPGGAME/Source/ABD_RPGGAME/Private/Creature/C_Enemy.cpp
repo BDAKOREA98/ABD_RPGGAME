@@ -62,7 +62,7 @@ void AC_Enemy::InitEnemyStartUpData()
 
 					LoadedData->GiveToAbilitySystemComponent(WarriorAbilityComponent);
 					
-					Debug::Print(TEXT("Enemy Start Up DAta Loaded "),  FColor::Red);
+					
 					
 					
 				}

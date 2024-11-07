@@ -23,6 +23,7 @@ class ABD_RPGGAME_API UC_CreatureAttributeSet : public UAttributeSet
 	
 public:
 	UC_CreatureAttributeSet();
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Health")
 	FGameplayAttributeData CurrentHealth;
