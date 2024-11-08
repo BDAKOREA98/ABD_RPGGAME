@@ -14,6 +14,8 @@
 #include "AbilitySystem/C_WarriorAbilityComponent.h"
 #include "DataAssets/StartUpData/C_Hero_DataAsset_StartUpDataBase.h"
 #include "Components/Combat/C_HeroCombatComponent.h"
+#include "Components/UI/C_HeroUIComponent.h"
+
 
 #include "WarriorDebugHelper.h"
 AC_Warrior::AC_Warrior()
@@ -42,12 +44,23 @@ AC_Warrior::AC_Warrior()
 
 
 	HeroCombatComponent = CreateDefaultSubobject<UC_HeroCombatComponent>(TEXT("HeroCombatComponent"));
+	HeroUIComponent = CreateDefaultSubobject<UC_HeroUIComponent>(TEXT("HeroUIComponent"));
 
 }
 
 UC_PawnCombatComponent* AC_Warrior::GetPawnCombatComponent() const
 {
 	return HeroCombatComponent;
+}
+
+UC_PawnUIComponent* AC_Warrior::GetPawnUIComponent() const
+{
+	return HeroUIComponent;
+}
+
+UC_HeroUIComponent* AC_Warrior::GetHeroUIComponent() const
+{
+	return HeroUIComponent;
 }
 
 void AC_Warrior::PossessedBy(AController* NewController)

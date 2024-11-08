@@ -32,6 +32,13 @@ UC_PawnCombatComponent* AC_Creature::GetPawnCombatComponent() const
 	return nullptr;
 }
 
+UC_PawnUIComponent* AC_Creature::GetPawnUIComponent() const
+{
+	return nullptr;
+}
+
+
+
 void AC_Creature::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

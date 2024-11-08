@@ -7,6 +7,7 @@
 #include "Engine/AssetManager.h"
 #include "DataAssets/StartUpData/C_DataAsset_StartUpDataBase.h"
 #include "DataAssets/StartUpData/C_Enemy_DataAsset_StartUpData.h"
+#include "Components/UI/C_EnemyUIComponent.h"
 
 #include "WarriorDebugHelper.h"
 AC_Enemy::AC_Enemy()
@@ -24,6 +25,7 @@ AC_Enemy::AC_Enemy()
 
 
 	EnemyCombatComponent =	CreateDefaultSubobject< UC_EnemyCombatComponent>("EnemyCombatComponent");
+	EnemyUIComponent =	CreateDefaultSubobject< UC_EnemyUIComponent>("EnemyUIComponent");
 
 
 
@@ -32,6 +34,16 @@ AC_Enemy::AC_Enemy()
 UC_PawnCombatComponent* AC_Enemy::GetPawnCombatComponent() const
 {
 	return EnemyCombatComponent;
+}
+
+UC_PawnUIComponent* AC_Enemy::GetPawnUIComponent() const
+{
+	return EnemyUIComponent;
+}
+
+UC_EnemyUIComponent* AC_Enemy::GetEnemyUIComponent() const
+{
+	return EnemyUIComponent;
 }
 
 void AC_Enemy::PossessedBy(AController* NewController)

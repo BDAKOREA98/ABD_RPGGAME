@@ -7,11 +7,15 @@
 #include "AbilitySystem/C_WarriorAbilityComponent.h"
 #include "C_CreatureAttributeSet.generated.h"
 
+class IPawnUIInterface;
+
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+
+
 
 /**
  * 
@@ -54,5 +58,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Damage")
 	FGameplayAttributeData DamageTaken;
 	ATTRIBUTE_ACCESSORS(UC_CreatureAttributeSet, DamageTaken);
+
+private:
+
+	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;
+
 
 };

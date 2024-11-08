@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Interface/PawnCombatInterface.h"
+#include "Interface/PawnUIInterface.h"
 #include "C_Creature.generated.h"
 
 class UC_WarriorAbilityComponent;
@@ -13,8 +14,9 @@ class UC_CreatureAttributeSet;
 class UAbilitySystemComponent;
 class UC_DataAsset_StartUpDataBase;
 
+
 UCLASS()
-class ABD_RPGGAME_API AC_Creature : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface
+class ABD_RPGGAME_API AC_Creature : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface, public IPawnUIInterface
 {
 	GENERATED_BODY()
 
@@ -29,10 +31,15 @@ public:
 	//Begin IPawnCombatInterface Interface
 	virtual UC_PawnCombatComponent* GetPawnCombatComponent() const override;
 	//End IPawnCombatInterface Interface
+
+	//Begin IPawnUIComponent Interface
+	virtual UC_PawnUIComponent* GetPawnUIComponent()  const override;
+	
+	//End IPawnUIComponent Interface
+
 protected:
 	//begin APwan interfece
 	virtual void PossessedBy(AController* NewController) override;
-
 	//End APwan interfece
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
 	UC_WarriorAbilityComponent* WarriorAbilityComponent;
