@@ -9,7 +9,7 @@
 
 class UC_EnemyCombatComponent;
 class UC_EnemyUIComponent;
-
+class UWidgetComponent;
 /**
  * 
  */
@@ -30,6 +30,7 @@ public:
 	//End IPawnUIComponent Interface
 
 protected:
+	virtual void BeginPlay() override;
 
 	//begin APwan interfece
 	virtual void PossessedBy(AController* NewController) override;
@@ -40,6 +41,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	UC_EnemyUIComponent* EnemyUIComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	UWidgetComponent* EnemyHealthWidgetComponent;
 
 private:
 	void InitEnemyStartUpData();

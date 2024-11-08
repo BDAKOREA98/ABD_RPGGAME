@@ -7,7 +7,9 @@
 #include "Engine/AssetManager.h"
 #include "DataAssets/StartUpData/C_DataAsset_StartUpDataBase.h"
 #include "DataAssets/StartUpData/C_Enemy_DataAsset_StartUpData.h"
+#include "Components/WidgetComponent.h"
 #include "Components/UI/C_EnemyUIComponent.h"
+#include "Widgets/C_WarriorWidgetBase.h"
 
 #include "WarriorDebugHelper.h"
 AC_Enemy::AC_Enemy()
@@ -25,8 +27,11 @@ AC_Enemy::AC_Enemy()
 
 
 	EnemyCombatComponent =	CreateDefaultSubobject< UC_EnemyCombatComponent>("EnemyCombatComponent");
+
 	EnemyUIComponent =	CreateDefaultSubobject< UC_EnemyUIComponent>("EnemyUIComponent");
 
+	EnemyHealthWidgetComponent = CreateDefaultSubobject< UWidgetComponent>("EnemyHealthWidgetComponent");
+	EnemyHealthWidgetComponent->SetupAttachment(GetMesh());
 
 
 }
@@ -44,6 +49,18 @@ UC_PawnUIComponent* AC_Enemy::GetPawnUIComponent() const
 UC_EnemyUIComponent* AC_Enemy::GetEnemyUIComponent() const
 {
 	return EnemyUIComponent;
+}
+
+void AC_Enemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (UC_WarriorWidgetBase* HealthWidget = Cast<UC_WarriorWidgetBase>(EnemyHealthWidgetComponent->GetUserWidgetObject()))
+	{
+		HealthWidget->InitEnemyCreateWidget(this);
+	}
+	
+
 }
 
 void AC_Enemy::PossessedBy(AController* NewController)
