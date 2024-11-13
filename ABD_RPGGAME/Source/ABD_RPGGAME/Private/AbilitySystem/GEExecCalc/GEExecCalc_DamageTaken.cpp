@@ -133,17 +133,17 @@ void UGEExecCalc_DamageTaken::Execute_Implementation(const FGameplayEffectCustom
 
 	}
 
-	const float FinalDamageDon = BaseDamage * SourceAttackPower / TargetDefencePower;
+	const float FinalDamageDone = BaseDamage * SourceAttackPower / TargetDefencePower;
 
-	//Debug::Print(TEXT("FinalDamageDon"), FinalDamageDon);
+	//Debug::Print(TEXT("FinalDamageDone"), FinalDamageDone);
 
-	if (FinalDamageDon >0.f)
+	if (FinalDamageDone >0.f)
 	{
 		OutExecutionOutput.AddOutputModifier(
 			FGameplayModifierEvaluatedData(
 				GetWarriorDamageCapture().DamageTakenProperty,
 				EGameplayModOp::Override,
-				FinalDamageDon
+				FinalDamageDone
 
 			)
 		);

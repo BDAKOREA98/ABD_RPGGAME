@@ -92,6 +92,7 @@ void UC_PawnCombatComponent::ToggleWeaponCollision(bool bShouldEnable, EToggleDa
 
 void UC_PawnCombatComponent::OnHitTargetActor(AActor* HitActor)
 {
+
 	
 }
 

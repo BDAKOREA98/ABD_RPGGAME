@@ -4,7 +4,7 @@
 #include "Weapons/WarriorWeaponBase.h"
 #include "Components/BoxComponent.h"
 #include "Creature/C_Enemy.h"
-
+#include "WarriorFunctionLibrary.h"
 #include "WarriorDebugHelper.h"
 
 // Sets default values
@@ -35,24 +35,15 @@ void AWarriorWeaponBase::OnCollisionBoxBeginOverlab(UPrimitiveComponent* Overlap
 	APawn* WeaponOwningPawn =	GetInstigator<APawn>();
 
 	checkf(WeaponOwningPawn, TEXT("Forgot to Assign an Instigator as the Owning pawn for the Weapon %s "), *GetName());
-	if (APawn* HitPawn =  Cast<APawn>(OtherActor))
+	
+	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
-		if (WeaponOwningPawn != HitPawn)
+		if (UWarriorFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
-			
-			OnWeaponHitTarget.ExecuteIfBound(OtherActor);
-
-
-			
-
+			OnWeaponHitTarget.ExecuteIfBound(OtherActor); 
 		}
 
-		//TODO : Implement hit vheck for enemy character
 	}
-
-	
-
-	
 
 
 }
@@ -62,15 +53,13 @@ void AWarriorWeaponBase::OnCollisionBoxEndOverlab(UPrimitiveComponent* Overlappe
 	APawn* WeaponOwningPawn = GetInstigator<APawn>();
 
 	checkf(WeaponOwningPawn, TEXT("Forgot to Assign an Instigator as the Owning pawn for the Weapon %s "), *GetName());
+
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
-		if (WeaponOwningPawn != HitPawn)
+		if (UWarriorFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
-			OnWeaponPulledFromTarget.ExecuteIfBound(OtherActor);
-
+			OnWeaponHitTarget.ExecuteIfBound(OtherActor);
 		}
 
-		//TODO : Implement hit vheck for enemy character
 	}
-
 }
