@@ -7,13 +7,14 @@
 #include "AbilitySystemInterface.h"
 #include "Interface/PawnCombatInterface.h"
 #include "Interface/PawnUIInterface.h"
+
 #include "C_Creature.generated.h"
 
 class UC_WarriorAbilityComponent;
 class UC_CreatureAttributeSet;
 class UAbilitySystemComponent;
 class UC_DataAsset_StartUpDataBase;
-
+class UMotionWarpingComponent;
 
 UCLASS()
 class ABD_RPGGAME_API AC_Creature : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface, public IPawnUIInterface
@@ -46,10 +47,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
 	UC_CreatureAttributeSet* WarriorAttributeSet;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MotionWarping")
+	UMotionWarpingComponent* MotionWarpingComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterData")
 	TSoftObjectPtr<UC_DataAsset_StartUpDataBase> CharacterStartUpData;
-
-
 
 
 public:
