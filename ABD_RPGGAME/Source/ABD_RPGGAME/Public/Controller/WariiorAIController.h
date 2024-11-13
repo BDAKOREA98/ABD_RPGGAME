@@ -20,10 +20,13 @@ public:
 	AWariiorAIController(const FObjectInitializer& ObjectInitializer);
 
 	// Begin IGenericTeamAgentInterface Interface.
-	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const;
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 	// End IGenericTeamAgentInterface Interface.
 
 protected:
+	
+	virtual void BeginPlay() override;
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UAIPerceptionComponent* EnemyPerceptionComponent;
@@ -34,5 +37,14 @@ protected:
 	UFUNCTION()
 	virtual void OnEnemyPercepationUpdated(AActor* Actor, FAIStimulus Stimulus);
 
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Detour Crowd Avoidance Config")
+	bool bEnableDetourCrowdAboidance = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Detour Crowd Avoidance Config", meta = (EditCondition = "bEnableDetourCrowdAboidance", UIMin = "1", UIMax = "4"))
+	int32 DetourCrowdAvoidanceQuality = 4;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Detour Crowd Avoidance Config", meta = (EditCondition = "bEnableDetourCrowdAboidance"))
+	float CollisionQueryRange = 600;
 
 };
