@@ -42,6 +42,7 @@ namespace WarriorGamePlayTags
 
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Weapon);
 	
+	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Status_Strafing);
 
 
 	/*Shared Tag  */

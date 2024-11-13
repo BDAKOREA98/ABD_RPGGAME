@@ -16,7 +16,8 @@ public class ABD_RPGGAME : ModuleRules
 			"EnhancedInput",
 			"GameplayTags",
             "EnhancedInput",
-            "GameplayTasks"
+            "GameplayTasks",
+            "AnimGraphRuntime"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

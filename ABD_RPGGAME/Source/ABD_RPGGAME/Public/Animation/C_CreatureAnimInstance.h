@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "GameplayTagContainer.h"
 #include "C_CreatureAnimInstance.generated.h"
 
 /**
@@ -17,5 +18,9 @@ class ABD_RPGGAME_API UC_CreatureAnimInstance : public UAnimInstance
 public:
 
 	UC_CreatureAnimInstance();
+
+protected:
+	UFUNCTION(BlueprintPure, meta = (BlueprintThreadSafe))
+	bool DoesOwnerHaveTag(FGameplayTag TagToCheck) const;
 
 };
