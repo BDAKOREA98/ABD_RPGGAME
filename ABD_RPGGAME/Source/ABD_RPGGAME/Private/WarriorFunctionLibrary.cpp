@@ -6,6 +6,8 @@
 #include "AbilitySystem/C_WarriorAbilityComponent.h"
 #include "Interface/PawnCombatInterface.h"
 #include "GenericTeamAgentInterface.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "WArriorGameplayTags.h"
 UC_WarriorAbilityComponent* UWarriorFunctionLibrary::NativeGetWarriorASCFromActor(AActor* InActor)
 {
     check(InActor);
@@ -81,6 +83,55 @@ bool UWarriorFunctionLibrary::IsTargetPawnHostile(APawn* QueryPawn, APawn* Targe
 
 
     return false;
+}
+
+float UWarriorFunctionLibrary::GetScalableFloatBalueAtLevel(const FScalableFloat& InScalableFloat, float InLevel)
+{
+
+    return InScalableFloat.GetValueAtLevel(InLevel);
+}
+
+FGameplayTag UWarriorFunctionLibrary::ComputeHitReactDirectionTag(AActor* InAttacker, AActor* InVictim, float& OutAngleDiffenece)
+{
+    check(InAttacker && InVictim);
+    const FVector VictimForwad = InVictim->GetActorForwardVector();
+    const FVector VictimToAttackerNormalized = (InAttacker->GetActorLocation() - InVictim->GetActorLocation()).GetSafeNormal();
+
+    const float DotResult =  FVector::DotProduct(VictimForwad, VictimToAttackerNormalized);
+    OutAngleDiffenece =       UKismetMathLibrary::DegAcos(DotResult);
+
+    
+    const FVector CrossResult = FVector::CrossProduct(VictimForwad, VictimToAttackerNormalized);
+
+    if (CrossResult.Z <0.0f)
+    {
+        OutAngleDiffenece *= -1.f;
+
+    }
+
+    if (OutAngleDiffenece >= -45.f && OutAngleDiffenece <= 45.f)
+    {
+        return WarriorGamePlayTags::Shared_Status_HitReact_Front;
+    }
+    else if (OutAngleDiffenece < -45.f && OutAngleDiffenece >= -135.f)
+    {
+        return WarriorGamePlayTags::Shared_Status_HitReact_Left;
+
+    }
+    else if (OutAngleDiffenece < -135.f || OutAngleDiffenece > 135.f)
+    {
+        return WarriorGamePlayTags::Shared_Status_HitReact_Back;
+
+    }
+    else if (OutAngleDiffenece > 45.f && OutAngleDiffenece <= 135.f)
+    {
+        return WarriorGamePlayTags::Shared_Status_HitReact_Right;
+
+    }
+
+
+
+    return WarriorGamePlayTags::Shared_Status_HitReact_Front;
 }
 
 
