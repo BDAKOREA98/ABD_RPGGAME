@@ -16,7 +16,24 @@ void UC_WarriorAbilityComponent::OnAbilityInputPressed(const FGameplayTag& InInp
 		{
 			continue;
 		}
-		TryActivateAbility(AbilitySpec.Handle);
+
+		if (InInputTag.MatchesTag(WarriorGamePlayTags::InputTag_Toggleable))
+		{
+			if (AbilitySpec.IsActive())
+			{
+				CancelAbilityHandle(AbilitySpec.Handle);
+
+			}
+			else
+			{
+				TryActivateAbility(AbilitySpec.Handle);
+			}
+		}
+		else
+		{
+			TryActivateAbility(AbilitySpec.Handle);
+		}
+		
 
 	}
 }

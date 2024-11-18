@@ -1,0 +1,223 @@
+
+
+
+#include "AbilitySystem/Abilities/C_HeroGameplayAbility_TargetLock.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Creature/C_Warrior.h"
+#include "Kismet/GameplayStatics.h"
+#include "Widgets/C_WarriorWidgetBase.h"
+#include "Controller/C_WarriorController.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/SizeBox.h"
+#include "WarriorFunctionLibrary.h"
+#include "WArriorGameplayTags.h"
+#include "Kismet/KismetMathLibrary.h"
+
+#include "WarriorDebugHelper.h"
+void UC_HeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+{
+	TryLockOnTarget();
+
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
+void UC_HeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	CleanUp();
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+}
+
+void UC_HeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
+{
+	if (!CurrentLockedActor ||
+		UWarriorFunctionLibrary::NativeDoesActorHaveTag(CurrentLockedActor, WarriorGamePlayTags::Shared_Status_Dead) ||
+		UWarriorFunctionLibrary::NativeDoesActorHaveTag(GetHeroCharacterFromActorInfo() , WarriorGamePlayTags::Shared_Status_Dead))
+	{
+		CancelTargetLockAbility();
+
+		return;
+	}
+
+	SetTargetLockWidgetPosition();
+	
+	const bool bShouldOverrideRotation =
+		!UWarriorFunctionLibrary::NativeDoesActorHaveTag(GetHeroCharacterFromActorInfo(), WarriorGamePlayTags::Player_Status_Rolling)
+		&&
+		!UWarriorFunctionLibrary::NativeDoesActorHaveTag(GetHeroCharacterFromActorInfo(), WarriorGamePlayTags::Player_Status_Blocking);
+
+
+	if (bShouldOverrideRotation)
+	{
+		const FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(
+			GetHeroCharacterFromActorInfo()->GetActorLocation(),
+			CurrentLockedActor->GetActorLocation()
+		);
+
+		const FRotator CurrentControlRot =GetHeroControllerFromActorInfo()->GetControlRotation();
+		const FRotator TargetRot = FMath::RInterpTo(CurrentControlRot, LookAtRot, DeltaTime, TargetLockRotationInterpSpeed);
+
+		GetHeroControllerFromActorInfo()->SetControlRotation(FRotator(TargetRot.Pitch, TargetRot.Yaw, 0.0f));
+		GetHeroCharacterFromActorInfo()->SetActorRotation(FRotator(0.f, TargetRot.Yaw, 0.f));
+	}
+
+
+}
+
+void UC_HeroGameplayAbility_TargetLock::TryLockOnTarget()
+{
+	GetAvailableActorsToLock();
+
+	if (AvailableActorsToLock.IsEmpty())
+	{
+		CancelTargetLockAbility();
+		return;
+	}
+
+	CurrentLockedActor = GetNearestTargetFromAvailableActors( AvailableActorsToLock);
+
+
+	if (CurrentLockedActor)
+	{
+		DrawTargetLockWidget();
+		SetTargetLockWidgetPosition();
+	}
+	else
+	{
+		CancelTargetLockAbility();
+	}
+
+}
+
+void UC_HeroGameplayAbility_TargetLock::GetAvailableActorsToLock()
+{
+	TArray<FHitResult> BoxTraceHits;
+
+
+	UKismetSystemLibrary::BoxTraceMultiForObjects(
+		GetHeroCharacterFromActorInfo(),
+		GetHeroCharacterFromActorInfo()->GetActorLocation(),
+		GetHeroCharacterFromActorInfo()->GetActorLocation() + GetHeroCharacterFromActorInfo()->GetActorForwardVector() * BoxTraceDistance,
+		TraceBoxSize / 2.0f,
+		GetHeroCharacterFromActorInfo()->GetActorForwardVector().ToOrientationRotator(),
+		BoxTraceChannel,
+		false,
+		TArray<AActor*>(),
+		bShowPersistenDebugShape ? EDrawDebugTrace::Persistent : EDrawDebugTrace::None,
+		BoxTraceHits,
+		true
+	);
+
+	for (const FHitResult& TraceHit : BoxTraceHits)
+	{
+		if (AActor* HitActor = TraceHit.GetActor())
+		{
+			if (HitActor != GetHeroCharacterFromActorInfo())
+			{
+				AvailableActorsToLock.AddUnique(HitActor);
+
+				
+			}
+			
+
+		}
+
+	}
+
+}
+
+AActor* UC_HeroGameplayAbility_TargetLock::GetNearestTargetFromAvailableActors(const TArray<AActor*>& InAvailableActors)
+{
+	float ClosestDistance = 0.0f;
+
+	return UGameplayStatics::FindNearestActor(GetHeroCharacterFromActorInfo()->GetActorLocation(), InAvailableActors, ClosestDistance);
+
+	
+}
+
+void UC_HeroGameplayAbility_TargetLock::DrawTargetLockWidget()
+{
+	if (!TargetLockWidget)
+	{
+		checkf(TargetLockWidgetClass, TEXT("Forgot to assign a valid widget class in blueprint"));
+
+		TargetLockWidget = CreateWidget< UC_WarriorWidgetBase>(GetHeroControllerFromActorInfo(), TargetLockWidgetClass);
+
+		check(TargetLockWidget);
+
+		TargetLockWidget->AddToViewport();
+	}
+
+
+	
+
+
+}
+
+void UC_HeroGameplayAbility_TargetLock::SetTargetLockWidgetPosition()
+{
+	if (!TargetLockWidget || !CurrentLockedActor)
+	{
+		CancelTargetLockAbility();
+		return;
+	}
+
+	FVector2D ScreenPosition;
+
+	UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(
+		GetHeroControllerFromActorInfo(),
+		CurrentLockedActor->GetActorLocation(),
+		ScreenPosition,
+		true
+
+	);
+
+	if (TargetLockWidgetSize == FVector2D::ZeroVector)
+	{
+		TargetLockWidget->WidgetTree->ForEachWidget(
+			[this](UWidget* FoundWidget)
+			{
+				if (USizeBox* FoundSizeBox = Cast<USizeBox>(FoundWidget))
+				{
+					TargetLockWidgetSize.X = FoundSizeBox->GetWidthOverride();
+					TargetLockWidgetSize.Y = FoundSizeBox->GetHeightOverride();
+
+
+				}
+			}
+		);
+	}
+
+	
+
+	ScreenPosition -= (TargetLockWidgetSize / 2.0f);
+	
+
+	TargetLockWidget->SetPositionInViewport(ScreenPosition, false);
+
+}
+
+void UC_HeroGameplayAbility_TargetLock::CancelTargetLockAbility()
+{
+	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+
+
+}
+
+void UC_HeroGameplayAbility_TargetLock::CleanUp()
+{
+	AvailableActorsToLock.Empty();
+
+	CurrentLockedActor = nullptr;
+
+	if (TargetLockWidget)
+	{
+		TargetLockWidget->RemoveFromParent();
+	}
+
+	TargetLockWidget = nullptr;
+	TargetLockWidgetSize = FVector2D::ZeroVector;
+
+}
