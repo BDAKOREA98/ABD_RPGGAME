@@ -20,6 +20,8 @@ class ABD_RPGGAME_API UC_WarriorAnimInstance : public UC_CreatureAnimInstance
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
+	
+	void NormalizeDirection();
 
 
 protected:

@@ -8,6 +8,8 @@
 
 class AC_Warrior;
 
+
+
 /**
  * 
  */
@@ -19,6 +21,9 @@ public:
 
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
+
+	
+
 
 protected:
 

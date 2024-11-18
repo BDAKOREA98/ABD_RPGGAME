@@ -15,7 +15,7 @@
 #include "DataAssets/StartUpData/C_Hero_DataAsset_StartUpDataBase.h"
 #include "Components/Combat/C_HeroCombatComponent.h"
 #include "Components/UI/C_HeroUIComponent.h"
-
+#include "AbilitySystemBlueprintLibrary.h"
 
 #include "WarriorDebugHelper.h"
 AC_Warrior::AC_Warrior()
@@ -93,6 +93,9 @@ void AC_Warrior::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	WarriorInputComponent->BindNativeInputAction(InputConfigDataAsset,WarriorGamePlayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
 	WarriorInputComponent->BindNativeInputAction(InputConfigDataAsset,WarriorGamePlayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
 	
+	WarriorInputComponent->BindNativeInputAction(InputConfigDataAsset, WarriorGamePlayTags::InputTag_SwitchTarget, ETriggerEvent::Triggered, this, &ThisClass::Input_SwitchTargetTriggerd);
+	WarriorInputComponent->BindNativeInputAction(InputConfigDataAsset, WarriorGamePlayTags::InputTag_SwitchTarget, ETriggerEvent::Completed, this, &ThisClass::Input_SwitchTargetCompleted);
+
 	WarriorInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleassed);
 
 
@@ -140,6 +143,25 @@ void AC_Warrior::Input_Look(const FInputActionValue& InputActionValue)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 
+}
+
+void AC_Warrior::Input_SwitchTargetTriggerd(const FInputActionValue& InputActionValue)
+{
+	SwitchDirection = InputActionValue.Get<FVector2D>();
+}
+
+void AC_Warrior::Input_SwitchTargetCompleted(const FInputActionValue& InputActionValue)
+{
+	FGameplayEventData Data;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		this,
+		SwitchDirection.X > 0.f ? WarriorGamePlayTags::Player_Event_SwitchTarget_Right : WarriorGamePlayTags::Player_Event_SwitchTarget_Left,
+		Data
+
+	);
+
+	
 }
 
 void AC_Warrior::Input_AbilityInputPressed(FGameplayTag InInputTag)

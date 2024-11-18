@@ -34,6 +34,18 @@ void UC_WarriorAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 
 	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwnerCreature->GetVelocity(), OwnerCreature->GetActorRotation());
 
+	NormalizeDirection();
 
+}
 
+void UC_WarriorAnimInstance::NormalizeDirection()
+{
+	if (LocomotionDirection > 180.0f)
+	{
+		LocomotionDirection -= 360.0f;
+	}
+	else if (LocomotionDirection < -180.0f)
+	{
+		LocomotionDirection += 360.0f;
+	}
 }

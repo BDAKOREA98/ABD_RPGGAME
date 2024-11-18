@@ -69,8 +69,12 @@ private:
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
 	void Input_Move(const FInputActionValue& InputActionValue);
-
 	void Input_Look(const FInputActionValue& InputActionValue);
+
+	void Input_SwitchTargetTriggerd(const FInputActionValue& InputActionValue);
+	void Input_SwitchTargetCompleted(const FInputActionValue& InputActionValue);
+
+	FVector2D SwitchDirection = FVector2D::ZeroVector;
 
 
 	void Input_AbilityInputPressed(FGameplayTag InInputTag);

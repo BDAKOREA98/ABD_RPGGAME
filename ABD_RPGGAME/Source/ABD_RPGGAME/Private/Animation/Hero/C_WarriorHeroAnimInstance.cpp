@@ -3,6 +3,7 @@
 
 #include "Animation/Hero/C_WarriorHeroAnimInstance.h"
 #include "Creature/C_Warrior.h"
+
 void UC_WarriorHeroAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();

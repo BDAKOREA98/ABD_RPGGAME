@@ -13,17 +13,22 @@
 #include "WarriorFunctionLibrary.h"
 #include "WArriorGameplayTags.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 #include "WarriorDebugHelper.h"
 void UC_HeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	TryLockOnTarget();
+	
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
 void UC_HeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	ResetTargetLockMovement();
+	ResetTargetLockMappingContext();
 	CleanUp();
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -66,6 +71,31 @@ void UC_HeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
 
 }
 
+void UC_HeroGameplayAbility_TargetLock::SwitchTarget(const FGameplayTag& InSwitchDirectionTag)
+{
+	GetAvailableActorsToLock();
+	TArray<AActor*> ActorsOnLeft;
+	TArray<AActor*> ActorsOnRight;
+	AActor* NewTargetToLock = nullptr;
+
+	GetAvailableActorsAroundTarget(ActorsOnLeft, ActorsOnRight);
+
+	if (InSwitchDirectionTag == WarriorGamePlayTags::Player_Event_SwitchTarget_Left)
+	{
+		NewTargetToLock = GetNearestTargetFromAvailableActors(ActorsOnLeft);
+	}
+	else
+	{
+		NewTargetToLock = GetNearestTargetFromAvailableActors(ActorsOnRight);
+	}
+
+	if (NewTargetToLock)
+	{
+		CurrentLockedActor = NewTargetToLock;
+	}
+
+}
+
 void UC_HeroGameplayAbility_TargetLock::TryLockOnTarget()
 {
 	GetAvailableActorsToLock();
@@ -76,8 +106,10 @@ void UC_HeroGameplayAbility_TargetLock::TryLockOnTarget()
 		return;
 	}
 
-	CurrentLockedActor = GetNearestTargetFromAvailableActors( AvailableActorsToLock);
+	InitTargetLockMovement();
+	InitTargetLockMappingContext();
 
+	CurrentLockedActor = GetNearestTargetFromAvailableActors( AvailableActorsToLock);
 
 	if (CurrentLockedActor)
 	{
@@ -93,6 +125,8 @@ void UC_HeroGameplayAbility_TargetLock::TryLockOnTarget()
 
 void UC_HeroGameplayAbility_TargetLock::GetAvailableActorsToLock()
 {
+	AvailableActorsToLock.Empty();
+
 	TArray<FHitResult> BoxTraceHits;
 
 
@@ -135,6 +169,38 @@ AActor* UC_HeroGameplayAbility_TargetLock::GetNearestTargetFromAvailableActors(c
 	return UGameplayStatics::FindNearestActor(GetHeroCharacterFromActorInfo()->GetActorLocation(), InAvailableActors, ClosestDistance);
 
 	
+}
+
+void UC_HeroGameplayAbility_TargetLock::GetAvailableActorsAroundTarget(TArray<AActor*>& OutActorsOnLeft, TArray<AActor*>& OutActorsOnRight)
+{
+	if (!CurrentLockedActor || AvailableActorsToLock.IsEmpty())
+	{
+		CancelTargetLockAbility();
+		return;
+	}
+	const FVector PlayerLocation = GetHeroCharacterFromActorInfo()->GetActorLocation();
+	const FVector PlayerToCurrentNormalized = (CurrentLockedActor->GetActorLocation() - PlayerLocation).GetSafeNormal();
+	for (AActor* AvailableActor : AvailableActorsToLock)
+	{
+
+		if (!AvailableActor || AvailableActor == CurrentLockedActor)
+		{
+			continue;
+		}
+		const FVector PlayerToAvailableNormaized = (AvailableActor->GetActorLocation() - PlayerLocation).GetSafeNormal();
+
+		const FVector CrossResult =	FVector::CrossProduct(PlayerToCurrentNormalized, PlayerToAvailableNormaized);
+		if (CrossResult.Z > 0.f)
+		{
+			OutActorsOnRight.AddUnique(AvailableActor);
+		}
+		else
+		{
+			OutActorsOnLeft.AddUnique(AvailableActor);
+		}
+
+	}
+
 }
 
 void UC_HeroGameplayAbility_TargetLock::DrawTargetLockWidget()
@@ -199,6 +265,24 @@ void UC_HeroGameplayAbility_TargetLock::SetTargetLockWidgetPosition()
 
 }
 
+void UC_HeroGameplayAbility_TargetLock::InitTargetLockMovement()
+{
+	CachedDefaultMaxWalkSpeed  = GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed;
+
+	GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed = TargetLockMaxWalkSpeed;
+
+
+}
+
+void UC_HeroGameplayAbility_TargetLock::InitTargetLockMappingContext()
+{
+	const ULocalPlayer* LocalPlayer = GetHeroControllerFromActorInfo()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* SubSystem =	ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+	check(SubSystem);
+
+	SubSystem->AddMappingContext(TargetLockMappingContext, 3);
+}
+
 void UC_HeroGameplayAbility_TargetLock::CancelTargetLockAbility()
 {
 	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
@@ -220,4 +304,28 @@ void UC_HeroGameplayAbility_TargetLock::CleanUp()
 	TargetLockWidget = nullptr;
 	TargetLockWidgetSize = FVector2D::ZeroVector;
 
+}
+
+void UC_HeroGameplayAbility_TargetLock::ResetTargetLockMovement()
+{
+	if (CachedDefaultMaxWalkSpeed > 0.f)
+	{
+		GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed = CachedDefaultMaxWalkSpeed;
+	}
+}
+
+void UC_HeroGameplayAbility_TargetLock::ResetTargetLockMappingContext()
+{
+	if (!GetHeroControllerFromActorInfo())
+	{
+		return;
+	}
+
+	const ULocalPlayer* LocalPlayer = GetHeroControllerFromActorInfo()->GetLocalPlayer();
+
+	UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+
+	check(SubSystem);
+
+	SubSystem->RemoveMappingContext(TargetLockMappingContext);
 }
