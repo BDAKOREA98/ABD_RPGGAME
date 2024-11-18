@@ -28,7 +28,7 @@ void UWarriorFunctionLibrary::AddGameplayTagToActorIfNone(AActor* InActor, FGame
 
 }
 
-void UWarriorFunctionLibrary::RemoveGameplayFromActorIfFound(AActor* InActor, FGameplayTag TagToRemove)
+void UWarriorFunctionLibrary::RemoveGameplayTagFromActorIfFound(AActor* InActor, FGameplayTag TagToRemove)
 {
     UC_WarriorAbilityComponent* ASC = NativeGetWarriorASCFromActor(InActor);
 
@@ -150,7 +150,7 @@ bool UWarriorFunctionLibrary::IsValidBlock(AActor* InAttacker, AActor* InDefende
 
 
 
-    return DotResult < -0.1f ? true : false;
+    return DotResult < -0.1f ;
 }
 
 
