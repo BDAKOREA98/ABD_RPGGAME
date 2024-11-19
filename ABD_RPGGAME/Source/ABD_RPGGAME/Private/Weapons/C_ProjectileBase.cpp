@@ -89,7 +89,7 @@ void AC_ProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActo
 	}
 	else
 	{
-
+		HandleApplyProjectileDamage(HitPawn, Data);
 	}
 
 	Destroy();
@@ -97,5 +97,24 @@ void AC_ProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActo
 
 void AC_ProjectileBase::OnProjectileBeginOverlab(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+}
+
+void AC_ProjectileBase::HandleApplyProjectileDamage(APawn* InHitPawn, const FGameplayEventData& InPayload)
+{
+	checkf(ProjectileDamageEffectSpecHandle.IsValid(), TEXT("Forgot to assign a vlid spec handle to the projectile : %s"), *GetActorNameOrLabel());
+
+	const bool bWasApplied = UWarriorFunctionLibrary::ApplyGameplayEffectSpecHandleToTargetActor(GetInstigator(), InHitPawn, ProjectileDamageEffectSpecHandle);
+
+	
+	if (bWasApplied)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+			InHitPawn,
+			WarriorGamePlayTags::Shared_Event_HitReact,
+			InPayload
+
+		);
+	}
+
 }
 
