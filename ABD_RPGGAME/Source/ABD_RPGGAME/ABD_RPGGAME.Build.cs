@@ -18,7 +18,8 @@ public class ABD_RPGGAME : ModuleRules
             "EnhancedInput",
             "GameplayTasks",
             "AnimGraphRuntime",
-            "MotionWarping"
+            "MotionWarping",
+            "Niagara"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
