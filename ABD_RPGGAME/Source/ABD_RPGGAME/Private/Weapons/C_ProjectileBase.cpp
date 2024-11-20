@@ -58,7 +58,7 @@ void AC_ProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActo
 
 	BP_OnSpawnProjectileHitFX(Hit.ImpactPoint);
 
-	APawn* HitPawn =	Cast<APawn>(OtherActor);
+	APawn* HitPawn = Cast<APawn>(OtherActor);
 	if (!HitPawn || !UWarriorFunctionLibrary::IsTargetPawnHostile(GetInstigator(), HitPawn))
 	{
 		Destroy();
