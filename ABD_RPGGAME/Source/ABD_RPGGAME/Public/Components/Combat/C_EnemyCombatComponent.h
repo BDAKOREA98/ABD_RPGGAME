@@ -16,5 +16,7 @@ class ABD_RPGGAME_API UC_EnemyCombatComponent : public UC_PawnCombatComponent
 public:
 
 	virtual void OnHitTargetActor(AActor* HitActor) override;
+protected:
 
+	virtual void ToggleBodyCollisionBoxCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType) override;
 };
