@@ -19,7 +19,8 @@ public class ABD_RPGGAME : ModuleRules
             "GameplayTasks",
             "AnimGraphRuntime",
             "MotionWarping",
-            "Niagara"
+            "Niagara",
+            "NavigationSystem"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
