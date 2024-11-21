@@ -29,7 +29,7 @@ struct FWarriorHeroSpecialAbilitySet : public FWarriorHeroAbilitySet
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta = (Categories = "Player.Colldown"))
-	TSoftObjectPtr<UMaterialInterface> AbilityIconMaterial;
+	TSoftObjectPtr<UMaterialInterface> SoftAbilityIconMaterial;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	FGameplayTag AbilityColldownTag;
