@@ -23,6 +23,24 @@ struct FWarriorHeroAbilitySet
 	bool IsValid() const;
 
 };
+USTRUCT(BlueprintType)
+struct FWarriorHeroSpecialAbilitySet : public FWarriorHeroAbilitySet
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta = (Categories = "Player.Colldown"))
+	TSoftObjectPtr<UMaterialInterface> AbilityIconMaterial;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	FGameplayTag AbilityColldownTag;
+
+
+
+
+
+};
+
+
 
 USTRUCT(BlueprintType)
 struct FWarriorHeroWeaponData
@@ -38,6 +56,9 @@ struct FWarriorHeroWeaponData
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputTag"))
 	TArray<FWarriorHeroAbilitySet> DefaultWeaponAbilities;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputTag"))
+	TArray<FWarriorHeroSpecialAbilitySet> DefaultSpecialWeaponAbilities;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 
 	FScalableFloat WeaponBaseDamage;
