@@ -1,4 +1,4 @@
-// Vince Petrelli All Rights Reserved
+
 
 
 #include "Creature/C_Warrior.h"
@@ -36,6 +36,11 @@ AC_Warrior::AC_Warrior()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+	
+
+
+	
+
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
