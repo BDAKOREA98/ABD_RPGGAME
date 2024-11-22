@@ -17,6 +17,7 @@ namespace WarriorGamePlayTags
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SwitchTarget);
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecailWeaponAbility_Light);
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecailWeaponAbility_Heavy);
+	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_PickUp_Stones);
 
 
 
@@ -41,6 +42,7 @@ namespace WarriorGamePlayTags
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Rage);
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_SpecailWeaponAbility_Light);
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_SpecailWeaponAbility_Heavy);
+	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_PickUp_Stone);
 
 
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Colldown_SpecailWeaponAbility_Light);
@@ -57,6 +59,7 @@ namespace WarriorGamePlayTags
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_SwitchTarget_Right);
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ActivateRage);
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_AOE);
+	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ConsumeStones);
 
 
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_JumpToFinisher);
