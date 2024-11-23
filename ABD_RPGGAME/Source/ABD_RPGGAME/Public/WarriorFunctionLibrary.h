@@ -11,7 +11,7 @@
 class UC_WarriorAbilityComponent;
 class UC_PawnCombatComponent;
 struct FScalableFloat;
-
+class UC_GameInstance;
 
 /**
  * 
@@ -71,6 +71,10 @@ public:
 		FLatentActionInfo LatentInfo);
 
 	
+	UFUNCTION(BlueprintPure, Category = "Warrior|FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
+	static UC_GameInstance* GetGameInstance(const UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
+	static void ToggleInputMode(const UObject* WorldContextObject, EInputMode InInputMode);
 
 };

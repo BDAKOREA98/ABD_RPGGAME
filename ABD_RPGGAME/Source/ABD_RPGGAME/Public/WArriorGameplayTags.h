@@ -112,6 +112,12 @@ namespace WarriorGamePlayTags
 	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_Invinclble);
 
 
+	/*Game Data Tag*/
+
+	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameData_Level_SurvivalGameModeMap);
+	ABD_RPGGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameData_Level_MainMenuMap);
+
+
 
 
 }
