@@ -32,9 +32,13 @@ UCLASS()
 class ABD_RPGGAME_API UC_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
 
+public:
+	virtual void Init() override;
 protected:
+
+	virtual void OnPreLoadMap(const FString& MapName);
+	virtual void OnDestinationWorldLoaded(UWorld* LoadedWorld);
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	TArray<FGameLevelSet> GameLevelSets;

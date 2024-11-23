@@ -69,6 +69,7 @@ class ABD_RPGGAME_API AC_SurvialGameMode : public AC_RPGGameMode
 	
 protected:
 
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 

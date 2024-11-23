@@ -7,11 +7,26 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/TargetPoint.h"
 #include "NavigationSystem.h"
-
+#include "WarriorFunctionLibrary.h"
 
 #include "WarriorDebugHelper.h"
 
 
+
+void AC_SurvialGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	EGameDifficulty SaveGameDifficulty;
+	if (UWarriorFunctionLibrary::TryLoadSavedGameDifficulty(SaveGameDifficulty))
+	{
+
+		CurrentGameDifficulty = SaveGameDifficulty;
+
+	}
+
+
+}
 
 void AC_SurvialGameMode::BeginPlay()
 {
