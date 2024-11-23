@@ -17,6 +17,7 @@ void FWarriorCountDownAction::UpdateOperation(FLatentResponse& Response)
 	{
 		CountDownOutput = EWarriorCountDownActionOutput::Completed;
 		Response.FinishAndTriggerIf(true, ExecutionFunction, OutputLink, CallbackTarget);
+		return;
 	}
 
 	if (ElapsedInterval < UpdateInterval)
