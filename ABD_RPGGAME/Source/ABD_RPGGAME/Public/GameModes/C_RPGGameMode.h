@@ -14,4 +14,7 @@ class ABD_RPGGAME_API AC_RPGGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	AC_RPGGameMode();
+
 };

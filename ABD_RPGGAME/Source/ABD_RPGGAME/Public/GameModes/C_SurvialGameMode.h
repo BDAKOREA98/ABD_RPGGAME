@@ -44,7 +44,7 @@ struct FEnemyWaveSpawnerTableRow : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	TArray< FEnemyWaveSpawnerInfo> EnemyWaveSpawnerDefinition;
+	TArray< FEnemyWaveSpawnerInfo> EnemyWaveSpawnerDefinitions;
 
 	UPROPERTY(EditAnywhere)
 	int32 TotalEnemyToSpawnThisWave = 1;
@@ -76,6 +76,13 @@ private:
 
 	void SetCurrentSurvialGameModeState(ESurvialGameModeState InState);
 	bool HasFinishedAllWaves() const;
+	void PreLoadNextWaveEnemies();
+	FEnemyWaveSpawnerTableRow* GetCurrentWaveSpawnerTableRow() const;
+	int32 TrySpawnWaveEnemies();
+	bool ShouldKeepSpawnEnemies() const;
+
+	UFUNCTION()
+	void OnEnemyDestroyed(AActor* DestroyedActor);
 
 
 	UPROPERTY()
@@ -95,18 +102,33 @@ private:
 	int32 CurrentWaveCount = 1;
 
 	UPROPERTY()
+	int32 CurrentSpawnedEnemiesCounter = 0;
+
+	UPROPERTY()
+	int32 TotalSpawnedEnemiesThisWaveCounter = 0;
+
+	UPROPERTY()
+	TArray<AActor*> TargetPointArray;
+
+	UPROPERTY()
 	float TimePassedSinceStart = 0.f;;
 
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "WaveDefinition", meta = (AllowPrivateAccess = "true"))
 	float SpawnNewWaveWaitTime = 5.f;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "WaveDefinition", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "WaveDefinition", meta = (AllowPrivateAccess = "true"))
 	float SpawnEnemiesDelayTime = 2.f;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "WaveDefinition", meta = (AllowPrivateAccess = "true"))
 	float WaveCompleteWaitTime = 5.f;
 
+	UPROPERTY()
+	TMap<TSoftClassPtr<AC_Enemy>, UClass* > PreLoadedEnemyClassMap;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void RegisterSpawnedEnemies(const TArray<AC_Enemy*>& InEnemiesToRegister);
 
 
 

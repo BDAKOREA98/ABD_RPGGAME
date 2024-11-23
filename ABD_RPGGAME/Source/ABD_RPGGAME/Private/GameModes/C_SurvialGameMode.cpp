@@ -2,6 +2,16 @@
 
 
 #include "GameModes/C_SurvialGameMode.h"
+#include "Engine/AssetManager.h"
+#include "Creature/C_Enemy.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/TargetPoint.h"
+#include "NavigationSystem.h"
+
+
+#include "WarriorDebugHelper.h"
+
+
 
 void AC_SurvialGameMode::BeginPlay()
 {
@@ -13,7 +23,7 @@ void AC_SurvialGameMode::BeginPlay()
 
 	TotalWavesToSpawn = EnemyWaveSpawnerDataTable->GetRowNames().Num();
 	
-
+	PreLoadNextWaveEnemies();
 
 }
 
@@ -36,14 +46,16 @@ void AC_SurvialGameMode::Tick(float DeltaTime)
 		TimePassedSinceStart += DeltaTime;
 		if (TimePassedSinceStart >= SpawnEnemiesDelayTime)
 		{
-			//ToDo
+			CurrentSpawnedEnemiesCounter += TrySpawnWaveEnemies();
+
+			TimePassedSinceStart = 0.f;
 
 			SetCurrentSurvialGameModeState(ESurvialGameModeState::InProgress);
 
 		}
 	}
 
-	if (CurrentSurvialGameModeState == ESurvialGameModeState::InProgress)
+	if (CurrentSurvialGameModeState == ESurvialGameModeState::WaveCompleted)
 	{
 		TimePassedSinceStart += DeltaTime;
 		if (TimePassedSinceStart >= WaveCompleteWaitTime)
@@ -58,6 +70,7 @@ void AC_SurvialGameMode::Tick(float DeltaTime)
 			else
 			{
 				SetCurrentSurvialGameModeState(ESurvialGameModeState::WaitSpawnNewWave);
+				PreLoadNextWaveEnemies();
 			}
 
 		}
@@ -81,4 +94,161 @@ void AC_SurvialGameMode::SetCurrentSurvialGameModeState(ESurvialGameModeState In
 bool AC_SurvialGameMode::HasFinishedAllWaves() const
 {
 	return CurrentWaveCount > TotalWavesToSpawn;
+}
+
+void AC_SurvialGameMode::PreLoadNextWaveEnemies()
+{
+	if (HasFinishedAllWaves())
+	{
+		return;
+	}
+
+	PreLoadedEnemyClassMap.Empty();
+
+
+	for (const FEnemyWaveSpawnerInfo& SpawnerInfo : GetCurrentWaveSpawnerTableRow()->EnemyWaveSpawnerDefinitions)
+	{
+		if (SpawnerInfo.SoftEnemyClassToSpawn.IsNull())
+		{
+			continue;
+		}
+		UAssetManager::GetStreamableManager().RequestAsyncLoad(
+			SpawnerInfo.SoftEnemyClassToSpawn.ToSoftObjectPath(),
+			FStreamableDelegate::CreateLambda(
+				[SpawnerInfo, this]()
+				{
+					if (UClass* LoadedEnemyClass = SpawnerInfo.SoftEnemyClassToSpawn.Get())
+					{
+						PreLoadedEnemyClassMap.Emplace(SpawnerInfo.SoftEnemyClassToSpawn, LoadedEnemyClass);
+
+						
+
+					}
+				}
+			)
+		);
+
+	}
+
+
+
+}
+
+FEnemyWaveSpawnerTableRow* AC_SurvialGameMode::GetCurrentWaveSpawnerTableRow() const
+{
+	const FName RowName = FName(TEXT("Wave") + FString::FromInt(CurrentWaveCount));
+
+	FEnemyWaveSpawnerTableRow* FoundRow = EnemyWaveSpawnerDataTable->FindRow< FEnemyWaveSpawnerTableRow>(RowName, FString());
+
+	checkf(FoundRow, TEXT("Could not find valid row under the name %s in the data table"), *RowName.ToString());
+
+	return FoundRow;
+
+}
+
+int32 AC_SurvialGameMode::TrySpawnWaveEnemies()
+{
+
+	if (TargetPointArray.IsEmpty())
+	{
+		UGameplayStatics::GetAllActorsOfClass(this, ATargetPoint::StaticClass(), TargetPointArray);
+	}
+
+	checkf(!TargetPointArray.IsEmpty(), TEXT("No calid target point found in level : %s for spawning eneies"), *GetWorld()->GetName());
+
+	
+	uint32 EnemiesSpawnedThisTime = 0;
+	
+	FActorSpawnParameters SpawnParam;
+	SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	for (const FEnemyWaveSpawnerInfo& SpawnerInfo : GetCurrentWaveSpawnerTableRow()->EnemyWaveSpawnerDefinitions)
+	{
+		if (SpawnerInfo.SoftEnemyClassToSpawn.IsNull())
+		{
+			continue;
+		}
+		const int32 NumToSpawn = FMath::RandRange(SpawnerInfo.MinPerSpawnCount, SpawnerInfo.MaxPerSpawnCount);
+
+		UClass* LoadedEnemyClass = PreLoadedEnemyClassMap.FindChecked(SpawnerInfo.SoftEnemyClassToSpawn);
+
+		for (int32 i = 0; i < NumToSpawn; i ++)
+		{
+			const int32 RandomTargetPointIndex = FMath::RandRange(0, TargetPointArray.Num() - 1);
+			const FVector SpawnOrigin =	TargetPointArray[RandomTargetPointIndex]->GetActorLocation();
+			const FRotator SpawnRotation = TargetPointArray[RandomTargetPointIndex]->GetActorForwardVector().ToOrientationRotator();
+
+			FVector RandomLocation;
+			UNavigationSystemV1::K2_GetRandomLocationInNavigableRadius(this, SpawnOrigin, RandomLocation, 400.0f);
+
+			RandomLocation += FVector(0.f, 0.f, 150.f);
+
+			AC_Enemy* SpawnedEnemy = GetWorld()->SpawnActor<AC_Enemy>(LoadedEnemyClass, RandomLocation, SpawnRotation, SpawnParam);
+
+			if (SpawnedEnemy)
+			{
+				SpawnedEnemy->OnDestroyed.AddUniqueDynamic(this, &ThisClass::OnEnemyDestroyed);
+
+				EnemiesSpawnedThisTime++;
+				TotalSpawnedEnemiesThisWaveCounter++;
+			}
+
+			if (!ShouldKeepSpawnEnemies())
+			{
+				return EnemiesSpawnedThisTime;
+			}
+
+		}
+
+	}
+
+
+	
+	return EnemiesSpawnedThisTime;
+
+
+
+
+	
+}
+
+bool AC_SurvialGameMode::ShouldKeepSpawnEnemies() const
+{
+	return TotalSpawnedEnemiesThisWaveCounter < GetCurrentWaveSpawnerTableRow()->TotalEnemyToSpawnThisWave;
+}
+
+void AC_SurvialGameMode::OnEnemyDestroyed(AActor* DestroyedActor)
+{
+	CurrentSpawnedEnemiesCounter--;
+
+	Debug::Print(FString::Printf(TEXT("CurrentSpawnedEnemiesCounter : %i, TotalSpawnedEnemiesThisWaveCounter : %i"), CurrentSpawnedEnemiesCounter, TotalSpawnedEnemiesThisWaveCounter));
+
+	if (ShouldKeepSpawnEnemies())
+	{
+		CurrentSpawnedEnemiesCounter += TrySpawnWaveEnemies();
+	}
+	else if (CurrentSpawnedEnemiesCounter == 0)
+	{
+		TotalSpawnedEnemiesThisWaveCounter = 0;
+		CurrentSpawnedEnemiesCounter = 0;
+
+		SetCurrentSurvialGameModeState(ESurvialGameModeState::WaveCompleted);
+	}
+}
+
+void AC_SurvialGameMode::RegisterSpawnedEnemies(const TArray<AC_Enemy*>& InEnemiesToRegister)
+{
+
+	for (AC_Enemy* SpawnedEnemy : InEnemiesToRegister)
+	{
+		if (SpawnedEnemy)
+		{
+			CurrentSpawnedEnemiesCounter++;
+
+			SpawnedEnemy->OnDestroyed.AddUniqueDynamic(this, &ThisClass::OnEnemyDestroyed);
+		}
+
+
+	}
+
 }
