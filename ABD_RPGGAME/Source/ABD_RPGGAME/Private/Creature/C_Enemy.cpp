@@ -12,7 +12,7 @@
 #include "Widgets/C_WarriorWidgetBase.h"
 #include "Components/BoxComponent.h"
 #include "WarriorFunctionLibrary.h"
-
+#include "GameModes/C_RPGGameMode.h"
 #include "WarriorDebugHelper.h"
 AC_Enemy::AC_Enemy()
 {
@@ -118,18 +118,42 @@ void AC_Enemy::InitEnemyStartUpData()
 		return;
 	}
 
+	int32 AbilityApplyLevel = 1;
+	if (AC_RPGGameMode* BaseGameMode = GetWorld()->GetAuthGameMode<AC_RPGGameMode>())
+	{
+		switch (BaseGameMode->GetCurrentGameDifficulty())
+		{
+		case EGameDifficulty::Easy:
+			AbilityApplyLevel = 1;
+			break;
+		case EGameDifficulty::Normal:
+			AbilityApplyLevel = 2;
+			break;
+		case EGameDifficulty::Hard:
+			AbilityApplyLevel = 3;
+			break;
+		case EGameDifficulty::Hell:
+			AbilityApplyLevel = 4;
+			break;
+
+		default:
+			break;
+		}
+	}
+
+
 	UAssetManager::GetStreamableManager().RequestAsyncLoad
 	(
 		CharacterStartUpData.ToSoftObjectPath(),
 		FStreamableDelegate::CreateLambda
 		(
-			[this]()
+			[this, AbilityApplyLevel]()
 			{
 				if (UC_DataAsset_StartUpDataBase* LoadedData = CharacterStartUpData.Get())
 				{
 				
 
-					LoadedData->GiveToAbilitySystemComponent(WarriorAbilityComponent);
+					LoadedData->GiveToAbilitySystemComponent(WarriorAbilityComponent, AbilityApplyLevel);
 					
 					
 					

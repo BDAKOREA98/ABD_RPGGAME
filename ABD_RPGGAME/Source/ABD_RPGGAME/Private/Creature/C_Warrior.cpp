@@ -16,7 +16,7 @@
 #include "Components/Combat/C_HeroCombatComponent.h"
 #include "Components/UI/C_HeroUIComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-
+#include "GameModes/C_RPGGameMode.h"
 #include "WarriorDebugHelper.h"
 AC_Warrior::AC_Warrior()
 {
@@ -75,7 +75,30 @@ void AC_Warrior::PossessedBy(AController* NewController)
 	{
 		if (UC_DataAsset_StartUpDataBase* LoadedData = CharacterStartUpData.LoadSynchronous())
 		{
-			LoadedData->GiveToAbilitySystemComponent(WarriorAbilityComponent);
+			int32 AbilityApplyLevel = 1;
+			if (AC_RPGGameMode* BaseGameMode = GetWorld()->GetAuthGameMode<AC_RPGGameMode>())
+			{
+				switch (BaseGameMode->GetCurrentGameDifficulty())
+				{
+				case EGameDifficulty::Easy:
+					AbilityApplyLevel = 4;
+					break;
+				case EGameDifficulty::Normal:
+					AbilityApplyLevel = 3;
+					break;
+				case EGameDifficulty::Hard:
+					AbilityApplyLevel = 2;
+					break;
+				case EGameDifficulty::Hell:
+					AbilityApplyLevel = 1;
+					break;
+
+				default:
+					break;
+				}
+			}
+
+			LoadedData->GiveToAbilitySystemComponent(WarriorAbilityComponent, AbilityApplyLevel);
 		}
 	}
 }
