@@ -149,7 +149,8 @@ bool UWarriorFunctionLibrary::IsValidBlock(AActor* InAttacker, AActor* InDefende
 
 
     //const FString DebugString = FString::Printf(TEXT("Dot Result : %f %f"), DotResult, DotResult < -0.1f ? TEXT("Valid Block") : TEXT("InvalidBlock"));
-    //Debug::Print(DebugString, DotResult < -0.1f ? FColor::Green : FColor::Red);
+    //
+    // Print(DebugString, DotResult < -0.1f ? FColor::Green : FColor::Red);
 
 
 
@@ -269,7 +270,7 @@ void UWarriorFunctionLibrary::SaveCurrentGameDifficulty(EGameDifficulty InDiffic
         WarriorSaveGameObject->SavedCurrentGameDifficulty = InDifficultyToSave;
 
         const bool bWasSaved = UGameplayStatics::SaveGameToSlot(WarriorSaveGameObject, WarriorGamePlayTags::GameData_SaveGame_Slot_1.GetTag().ToString(),0);
-        Debug::Print(bWasSaved ? TEXT("Difficulty Saved") : TEXT("Difficulty No Saved"));
+       // Debug::Print(bWasSaved ? TEXT("Difficulty Saved") : TEXT("Difficulty No Saved"));
 
     }
 
@@ -285,7 +286,7 @@ bool UWarriorFunctionLibrary::TryLoadSavedGameDifficulty(EGameDifficulty& OutDif
         {
             OutDifficultyToSave = WarriorSaveGameObject->SavedCurrentGameDifficulty;
 
-            Debug::Print(TEXT("Loading Successful"), FColor::Green);
+            //Debug::Print(TEXT("Loading Successful"), FColor::Green);
 
             return true;
         }
