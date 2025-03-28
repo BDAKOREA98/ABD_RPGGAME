@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using UnrealBuildTool.Rules;
 
 public class ABD_RPGGAME : ModuleRules
 {
@@ -14,14 +15,18 @@ public class ABD_RPGGAME : ModuleRules
 			"Engine",
 			"InputCore",
 			"EnhancedInput",
-			"GameplayTags",
             "EnhancedInput",
-            "GameplayTasks",
+            "GameplayAbilities",
+			"GameplayTags",
+			"GameplayTasks",
             "AnimGraphRuntime",
             "MotionWarping",
             "Niagara",
             "NavigationSystem",
-            "MoviePlayer"
+            "AIModule",              
+			"NavigationSystem",      
+			"UMG",
+			"MoviePlayer"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
